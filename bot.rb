@@ -1,13 +1,15 @@
+require 'dotenv/load'
 require 'nokogiri'
 require 'telegram/bot'
 require 'open-uri'
 
-token = '369433381:AAF4mnXcr1Zp_KQ_5So5BZ2B1pLxmD5yhCw'
+token = ENV['TG_TOKEN']
 $posts = []
 
 # Parse method
 def parse_posts
-  page = Nokogiri::HTML(open('http://bash.im/best'))
+  url = 'http://bash.im/best'
+  page = Nokogiri::HTML(open(url))
   page.css('.quote').css('.text').each do |a|
     post = a.text
     $posts.push(post)
@@ -23,7 +25,7 @@ Telegram::Bot::Client.run(token) do |bot|
       case message.text
       when '/posts'
         bot.api.send_message(
-        chat_id: message.chat.id,
+      chat_id: message.chat.id,
         text:  "Hi, #{message.from.first_name}.\n
         Total posts: #{$posts.length.to_s}")
         bot.api.send_message(
@@ -54,7 +56,7 @@ Telegram::Bot::Client.run(token) do |bot|
         chat_id: message.chat.id,
         text: "Sorry, IDK what you want from me")
       end
-  end
+    end
   rescue Telegram::Bot::Exceptions::ResponseError => e
     retry
   end
