@@ -8,6 +8,13 @@ TOKEN = ENV['TG_TOKEN'].freeze
 URL = 'http://bash.im/best'.freeze
 $posts = []
 
+def initialize
+  rescue Telegram::Bot::Exceptions::ResponseError => err
+  logger = Logger.new('logfile.log')
+  logger.fatal('Caught exception; exiting')
+  logger.fatal(err)
+end
+
 # Parse method
 def parse_posts
   page = Nokogiri::HTML(open(URL))
@@ -32,19 +39,11 @@ Telegram::Bot::Client.run(TOKEN) do |bot|
         )
         bot.api.send_message(
           chat_id: message.chat.id,
-          # don't get how to insert '/n' to this yet
           text: $posts.first(10).join("\n \n").to_s
         )
-        # machinegun
-        # $posts.length.times do |i|
-        #   bot.api.send_message(
-        #   chat_id: message.chat.id,
-        #   text: "#{$posts[i]+"\n"}")
-        #   break if i > 5
-        # end
       when '/refresh'
         parse_posts
-      # when '/stop'
+      # todo: when '/stop'
       when '/help'
         bot.api.send_message(
           chat_id: message.chat.id,
@@ -60,9 +59,5 @@ Telegram::Bot::Client.run(TOKEN) do |bot|
         )
       end
     end
-  rescue Telegram::Bot::Exceptions::ResponseError => err
-    logger = Logger.new('logfile.log')
-    logger.fatal('Caught exception; exiting')
-    logger.fatal(err)
   end
 end
