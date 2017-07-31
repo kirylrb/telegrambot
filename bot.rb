@@ -52,9 +52,10 @@ Telegram::Bot::Client.run(TOKEN) do |bot|
         )
       end
     end
+
   rescue Telegram::Bot::Exceptions::ResponseError => err
-  logger = Logger.new('logfile.log')
-  logger.fatal('Caught exception; exiting')
-  logger.fatal(err)
+    logger = Logger.new('errors.log', 10, 1024000)
+    logger.error err.message
+    logger.error err.backtrace.join("\n")
   end
 end
