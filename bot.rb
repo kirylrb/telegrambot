@@ -8,13 +8,6 @@ TOKEN = ENV['TG_TOKEN'].freeze
 URL = 'http://bash.im/best'.freeze
 $posts = []
 
-def initialize
-  rescue Telegram::Bot::Exceptions::ResponseError => err
-  logger = Logger.new('logfile.log')
-  logger.fatal('Caught exception; exiting')
-  logger.fatal(err)
-end
-
 # Parse method
 def parse_posts
   page = Nokogiri::HTML(open(URL))
@@ -34,23 +27,23 @@ Telegram::Bot::Client.run(TOKEN) do |bot|
       when '/posts'
         bot.api.send_message(
           chat_id: message.chat.id,
-          text:  "Hi, #{message.from.first_name}.\n
-          Total posts: #{$posts.length}"
+          text:  'Hi, #{message.from.first_name}.\n
+          Total posts: #{$posts.length}'
         )
         bot.api.send_message(
           chat_id: message.chat.id,
-          text: $posts.first(10).join("\n \n").to_s
+          text: $posts.first(10).join('\n \n').to_s
         )
       when '/refresh'
         parse_posts
-      # todo: when '/stop'
+      # TODO: when '/stop'
       when '/help'
         bot.api.send_message(
           chat_id: message.chat.id,
-          text: "Avaialable commands: \n
+          text: 'Avaialable commands: \n
           /posts - to show posts from bash.im \n
           /refresh - get freshest posts \n
-          /stop - stop recieving joke posts"
+          /stop - stop recieving joke posts'
         )
       else
         bot.api.send_message(
@@ -59,5 +52,9 @@ Telegram::Bot::Client.run(TOKEN) do |bot|
         )
       end
     end
+  rescue Telegram::Bot::Exceptions::ResponseError => err
+  logger = Logger.new('logfile.log')
+  logger.fatal('Caught exception; exiting')
+  logger.fatal(err)
   end
 end
