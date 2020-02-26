@@ -16,11 +16,11 @@ GEM
     httparty (0.15.5)
       multi_xml (>= 0.5.2)
     ice_nine (0.11.2)
-    mini_portile2 (2.2.0)
+    mini_portile2 (2.4.0)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
-    nokogiri (1.8.0)
-      mini_portile2 (~> 2.2.0)
+    nokogiri (1.10.8)
+      mini_portile2 (~> 2.4.0)
     telegram-bot-ruby (0.8.1)
       faraday
       virtus
